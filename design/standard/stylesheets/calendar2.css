@@ -1,0 +1,46 @@
+/*
+ * Example styles
+ */
+
+.calendar2category-175 a:before,
+.calendar2category-175 label:before
+{
+	content: url( ../images/bookmark_16.png);
+}
+
+
+.calendar2category-176 a:before,
+.calendar2category-176 label:before
+{
+	content: url( ../images/block_16.png);
+}
+
+.calendar2category-177 a:before,
+.calendar2category-177 label:before
+{
+	content: url( ../images/bubble_16.png);
+}
+
+
+
+
+
+
+.calendar2category-252 a:before,
+.calendar2category-252 label:before
+{
+	content: url( ../images/bookmark_16.png);
+}
+
+
+.calendar2category-253 a:before,
+.calendar2category-253 label:before
+{
+	content: url( ../images/block_16.png);
+}
+
+.calendar2category-254 a:before,
+.calendar2category-254 label:before
+{
+	content: url( ../images/bubble_16.png);
+}

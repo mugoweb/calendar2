@@ -1,0 +1,112 @@
+
+STEP BY STEP INSTALLATION INSTRUCTIONS
+
+1) Install the extention
+
+Copy or extract the extension "calendar2" into your
+extension folder of your eZ Publish installation.
+
+2) Add 2 DB tables
+
+The file
+
+extension/calendar2/doc/calendar2.sql
+
+contains 2 DB tables that you need to add to
+your eZ Publish database. Run following command:
+
+ez_root$> mysql -u <user> -p <my db name> < extension/calendar2/doc/calendar2.sql
+
+
+3) Enable the extension
+
+Enable the "calendar2" extension. In most cases you
+enable it in
+
+settings/override/site.ini.append.php
+
+[ExtensionSettings]
+ActiveExtensions[]=calendar2
+
+4) Add override rules to your public facing siteaccess (settings/siteaccess/<siteaccess name>/override.ini.append.php):
+
+[full_calendar2]
+Source=node/view/full.tpl
+MatchFile=full/calendar2.tpl
+Subdir=templates
+Match[class_identifier]=calendar2
+
+[full_calendar2event]
+Source=node/view/full.tpl
+MatchFile=full/calendar2event.tpl
+Subdir=templates
+Match[class_identifier]=calendar2event
+
+
+5) Cache and autoloads
+
+Clear all cache and rebuild autoload array
+
+ez_root$> php bin/php/ezcache --clear-all
+ez_root$> php bin/php/ezpgenerateautoloads.php -e
+
+
+6) Install the calendar2 package
+
+Go to setup / packages
+
+Import a new package and select the file in
+extension/calendar2/doc/calendar2.ezpkg
+
+It's going to add 3 new content classes that are
+required.
+
+Make sure to hit the install button.
+
+Note that if you have errors on importing the package, you might need to use the included v7.php to patch your eZ Components install.
+Overwrite the file in Archive/src/tar/v7.php with the version included in this install.
+For some background on the package issue, see http://issues.ez.no/IssueView.php?Id=16822
+
+Note also that the classes in the package will be installed in the language eng-US.
+Translate the class to another language if desired, especially if you are using a single-language install in a language other than eng-US.
+
+7) Change user permissions
+
+Edit the anonymous user role
+
+Add a new policy and select the "calendar2"
+module. Grant access to all function for that
+module.
+
+8) Enable the workflows
+
+Under Setup / Workflows, create two new workflows.
+#1: Name it "Update event table" and select the event "updateeventtable".
+Save the workflow and enable it under Setup / Triggers
+(content / publish / after AND content / hide / after ).
+#2: Name it "Remove events from table" and select the event "removeevent"
+Save the workflow and enable it under Setup / Triggers
+(content / delete / before ).
+
+9) Enable JavaScript and CSS
+The extension expects that you are using ezjscore. If you are not
+you should do the following:
+If you do not have automatic loading of CSS and JS files
+listed in design.ini, manually add the JS files in
+extension/calendar2/settings/design.ini.append.php to your
+page head.
+Also, add the stylesheets from
+extension/calendar2/design/standard/stylesheets/
+to your page head.
+Also, remove the ezcss_require calls from
+extension/calendar2/design/standard/override/templates/full/calendar2.tpl
+
+10) Create a folder to contain event categories.
+Enter the node ID of that folder in [Calendar]CategoriesFolderNodeID in calendar2.ini.append.php
+Also, edit the Category Event class and select that folder under the Categories object relations attribute.
+Categories are required -- every event must have a category.
+
+You are done with the installation - see the user
+manual for an example of how to use calendar2
+
+

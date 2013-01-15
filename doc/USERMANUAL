@@ -1,0 +1,63 @@
+
+USER MANUAL
+
+The manual uses an example to show the functionality
+of the calendar2 extensions.
+
+Login to the administration interface of eZ Publish. First
+create all the categories. For example create a "Folder"
+in the Media Library. Let's call it "Calendar Categories".
+Under that node, create your category nodes. You need to
+select the content class type "Calendar2 Category".
+Make sure that anonymous users are able to read
+"Calendar2 Category" content classes in the media
+library.
+Go to setup / classes. Edit the "Calendar2 Event" content class.
+For the attribute "Categories" you need to select the default
+location. Click on "Select location" and select the Folder node
+"Calendar Categories" that we created in the Media Library
+before. Save your class changes.
+Create a "Calendar2 Calendar" somewhere in your content structure and
+give it a name.
+The "Calendar2 Calendar" is a container node and you need to create
+"Calendar2 Events" under that node. Create some events now.
+
+If you move the calendar or an event to another location in the tree, you must run the cronjob:
+php runcronjobs.php update_calendar2
+
+Fetch function 'calendar2', 'list' takes two parameters: calendar_node_id and optional array of categories:
+{* Example use *}
+{def $events = fetch( 'calendar2', 'list', hash( 'calendar_node_id', 76 ) )}
+{if $events}
+    {foreach $events as $event}
+        <li>
+            <a href={$event.node.url_alias|ezurl()}>{$event.title|wash()}:
+            {* All day, same day *}
+            {if and( eq( 1, $event.all_day ), eq( $event.start|datetime( 'custom', '%Y%m%d' ), $event.end|datetime( 'custom', '%Y%m%d' ) ) )}
+                {$event.start|datetime( 'custom', '%F %j, %Y' )}
+            {* Not all day, but on the same day *}
+            {elseif eq( $event.start|datetime( 'custom', '%Y%m%d' ), $event.end|datetime( 'custom', '%Y%m%d' ) )}
+                {$event.start|datetime( 'custom', '%F %j, %Y %g:%i%a' )} to {$event.end|datetime( 'custom', '%g:%i%a' )}
+            {* All day, spans more than a day *}
+            {elseif eq( 1, $event.all_day )}
+                {$event.start|datetime( 'custom', '%F %j, %Y' )} to {$event.end|datetime( 'custom', '%F %j, %Y' )}
+            {else}
+                {$event.start|datetime( 'custom', '%F %j, %Y %g:%i%a' )} to {$event.end|datetime( 'custom', '%F %j, %Y %g:%i%a' )}
+            {/if}
+            </a>
+        </li>
+    {/foreach}
+{/if}
+
+Returns an array of results with the following:
+id: internal ID of event (not that useful)
+node_id: Node ID of event
+calendar_node_id: Node ID of calendar it's a part of
+category_id: Event category ID, internal
+title: Text title
+content: Not used yet
+start: Timestamp
+end: Timestamp
+all_day: 1 or 0
+categories: String of category node IDs
+node: eZ Publish node of the event

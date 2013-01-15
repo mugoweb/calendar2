@@ -1,0 +1,4 @@
+- Event full view template
+- Cache webservice calls with an ezp cache-block
+- Some design tweaks for category image and recurring events
+- Support stripped down calendar when JavaScript is not enabled
